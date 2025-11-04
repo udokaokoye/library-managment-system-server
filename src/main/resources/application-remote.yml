@@ -17,3 +17,5 @@ spring:
 logging:
   level:
     org.hibernate.SQL: warn
+
+
