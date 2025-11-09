@@ -4,12 +4,10 @@ import com.finalproject.library_management_system_backend.dtos.CreateReservation
 import com.finalproject.library_management_system_backend.dtos.ReservationDto;
 import com.finalproject.library_management_system_backend.services.ReservationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
@@ -21,5 +19,10 @@ public class ReservationController {
     @PostMapping
     public ReservationDto createReservation(@RequestBody CreateReservationRequest request, Principal principal) {
         return reservationService.createReservation(request,principal.getName());
+    }
+
+    @GetMapping
+    public List<ReservationDto> getAllReservations() {
+        return reservationService.getAllReservations();
     }
 }

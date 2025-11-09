@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,10 @@ public class ReservationService {
 
     @Transactional
     public ReservationDto createReservation(CreateReservationRequest request, String userEmail) {
+
+        int days = (request.getDaysToKeep() == null || request.getDaysToKeep() <= 0) ? 7 : request.getDaysToKeep();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime expectedReturn = now.plusDays(days);
 
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -45,12 +51,20 @@ public class ReservationService {
                 .user(user)
                 .book(book)
                 .reservationDate(LocalDateTime.now())
+                .expectedReturnDate(expectedReturn)
                 .status(ReservationStatus.BORROWED)
                 .build();
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return reservationMapper.toDto(savedReservation);
+    }
+
+    public List<ReservationDto> getAllReservations() {
+        return reservationRepository.findAll()
+                .stream()
+                .map(reservationMapper::toDto)
+                .collect(Collectors.toList());
     }
 
 }

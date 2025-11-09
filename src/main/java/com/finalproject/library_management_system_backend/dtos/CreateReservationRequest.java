@@ -6,4 +6,5 @@ import lombok.Data;
 public class CreateReservationRequest {
     private Long userId;
     private Long bookId;
+    private Integer DaysToKeep;
 }
