@@ -10,9 +10,13 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+
+    @Mapping(source = "userType.typeName", target = "userType")
+    @Mapping(source = "email", target = "email")
     UserDto toDto(User user);
 
-    @Mapping(target= "userTypeId", source= "userTypeId")
+
+    @Mapping(target= "userType", source= "userTypeId")
     User toEntity(RegisterUserRequest request);
 
     default UserType map(Long userTypeId) {

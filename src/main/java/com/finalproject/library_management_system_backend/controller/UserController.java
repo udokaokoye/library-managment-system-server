@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/users")
@@ -26,5 +28,10 @@ public class UserController {
     @PostMapping
     public UserDto createUser(@RequestBody RegisterUserRequest request){
         return userService.createUser(request);
+    }
+
+    @GetMapping("/user-details")
+    public UserDto getMyUserDetails(Principal principal) {
+        return userService.getUserDetailsByEmail(principal.getName());
     }
 }
