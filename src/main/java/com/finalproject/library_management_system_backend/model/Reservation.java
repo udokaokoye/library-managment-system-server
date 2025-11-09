@@ -34,6 +34,9 @@ public class Reservation {
     @Column(name = "reservation_date", nullable = false)
     private LocalDateTime reservationDate;
 
+    @Column(name = "expected_return_date", nullable = false)
+    private LocalDateTime expectedReturnDate;
+
     @Column(name = "return_date")
     private LocalDateTime returnDate;
 

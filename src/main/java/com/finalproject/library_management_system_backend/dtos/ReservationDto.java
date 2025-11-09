@@ -11,6 +11,7 @@ public class ReservationDto {
     private Long id;
     private ReservationStatus status;
     private LocalDateTime reservationDate;
+    private LocalDateTime expectedReturnDate;
     private LocalDateTime returnDate;
 
     private Long userId;
