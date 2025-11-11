@@ -10,9 +10,10 @@ import com.finalproject.library_management_system_backend.model.User;
 import com.finalproject.library_management_system_backend.repositories.BookRepository;
 import com.finalproject.library_management_system_backend.repositories.ReservationRepository;
 import com.finalproject.library_management_system_backend.repositories.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,6 +61,7 @@ public class ReservationService {
         return reservationMapper.toDto(savedReservation);
     }
 
+    @Transactional(readOnly = true)
     public List<ReservationDto> getAllReservations() {
         return reservationRepository.findAll()
                 .stream()
