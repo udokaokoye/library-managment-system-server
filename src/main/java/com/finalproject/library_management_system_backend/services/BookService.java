@@ -11,13 +11,25 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+/**
+ * This is a service class for creating books in the library system.
+ * This class handles business logic related to books.
+ */
+
 @Service
 @AllArgsConstructor
 public class BookService {
 
+
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final EntityManager entityManager;
+
+/**
+ * Creates a new book.
+ * @param request request contains book creation data
+ * @return BookDto that represents the new books that's created in the system
+ */
 
     @Transactional
     public BookDto createBook(@RequestBody CreateBookRequest request) {
