@@ -28,10 +28,11 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final ReservationMapper reservationMapper;
 
+    private static final int DEFAULT_DAYS_TO_KEEP = 7;
     @Transactional
     public ReservationDto createReservation(CreateReservationRequest request, String userEmail) {
 
-        int days = (request.getDaysToKeep() == null || request.getDaysToKeep() <= 0) ? 7 : request.getDaysToKeep();
+        int days = (request.getDaysToKeep() == null || request.getDaysToKeep() <= 0) ? DEFAULT_DAYS_TO_KEEP : request.getDaysToKeep();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expectedReturn = now.plusDays(days);
 
