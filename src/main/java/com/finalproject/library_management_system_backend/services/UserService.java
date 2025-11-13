@@ -19,6 +19,11 @@ public class UserService {
     private final UserMapper userMapper;
     private final EntityManager entityManager;
 
+    public UserDto getUserDetailsByEmail(String email){
+        var userEntity = userRepository.findByEmail(email).orElseThrow();
+        return userMapper.toDto(userEntity);
+    }
+
     @Transactional
     public UserDto registerUser(RegisterUserRequest request) {
         var userEntity = userMapper.toEntity(request);
@@ -28,3 +33,4 @@ public class UserService {
  }
 
 
+}

@@ -24,7 +24,7 @@ public class UserType {
     private String typeName;
 
     @OneToMany(
-        mappedBy = "userTypeId",
+        mappedBy = "userType",
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )

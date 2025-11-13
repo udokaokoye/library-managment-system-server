@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://194.163.46.5:3306/u896018919_library_system?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://194.163.46.5:3306/u896018919_library_system?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&zeroDateTimeBehavior=CONVERT_TO_NULL
     username: u896018919_root
     password: EnterpriseAppDevelopment@1
   jpa:
