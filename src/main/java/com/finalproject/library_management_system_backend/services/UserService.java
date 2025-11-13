@@ -20,7 +20,7 @@ public class UserService {
     private final EntityManager entityManager;
 
     @Transactional
-    public UserDto createUser(RegisterUserRequest request) {
+    public UserDto registerUser(RegisterUserRequest request) {
         var userEntity = userMapper.toEntity(request);
         userEntity = userRepository.save(userEntity);
         return userMapper.toDto(userEntity);
