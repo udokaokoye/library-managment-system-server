@@ -10,5 +10,8 @@ public enum ReservationStatus {
     RESERVED,
     BORROWED,
     LATE,
-    RETURNED
+    RETURNED,
+    CANCELED,
+    OVERDUE,
+    LATE_RETURNED
 }
