@@ -28,7 +28,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/reservations").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/reservations/**").authenticated()
                         .requestMatchers("/reservations/**").hasRole( "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/reservations/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/reservations/cancel/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/reservations/return/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/reservations/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/books").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/books/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/books/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

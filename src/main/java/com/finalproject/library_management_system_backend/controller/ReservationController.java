@@ -4,6 +4,7 @@ import com.finalproject.library_management_system_backend.dtos.CreateReservation
 import com.finalproject.library_management_system_backend.dtos.ReservationDto;
 import com.finalproject.library_management_system_backend.services.ReservationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -24,5 +25,34 @@ public class ReservationController {
     @GetMapping
     public List<ReservationDto> getAllReservations() {
         return reservationService.getAllReservations();
+    }
+
+    @GetMapping("/my-reservations")
+    public List<ReservationDto> getMyReservations(Principal principal) {
+        return reservationService.getReservationsByUser(principal.getName());
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<ReservationDto> getUserReservations(@PathVariable Long userId) {
+        return reservationService.getReservationsByUserId(userId);
+
+    }
+
+    @PutMapping("/collect/{id}")
+    public ResponseEntity<String> collectBook(@PathVariable Long id) {
+        reservationService.collectBook(id);
+        return ResponseEntity.ok("Book collected (Status: BORROWED).");
+    }
+
+    @PutMapping("/cancel/{id}")
+    public ResponseEntity<String> cancelReservation(@PathVariable Long id) {
+        reservationService.cancelReservation(id);
+        return ResponseEntity.ok("Reservation canceled successfully.");
+    }
+
+    @PutMapping("/return/{id}")
+    public ResponseEntity<String> returnBook(@PathVariable Long id) {
+        reservationService.returnBook(id);
+        return ResponseEntity.ok("Book returned successfully.");
     }
 }
