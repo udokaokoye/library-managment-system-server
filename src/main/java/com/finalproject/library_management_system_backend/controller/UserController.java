@@ -27,7 +27,7 @@ public class UserController {
 
     @PostMapping
     public UserDto createUser(@RequestBody RegisterUserRequest request){
-        return userService.createUser(request);
+        return userService.registerUser(request);
     }
 
     @GetMapping("/user-details")

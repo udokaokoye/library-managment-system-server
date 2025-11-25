@@ -25,10 +25,11 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto createUser(@RequestBody RegisterUserRequest request){
+    public UserDto registerUser(RegisterUserRequest request) {
         var userEntity = userMapper.toEntity(request);
-        entityManager.persist(userEntity);
+        userEntity = userRepository.save(userEntity);
         return userMapper.toDto(userEntity);
+    }
  }
 
 
