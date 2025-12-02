@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-// You no longer need to import AntPathRequestMatcher
+
 
 @Configuration
 @EnableWebSecurity
@@ -26,19 +26,28 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/books").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/reservations").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/reservations/**").authenticated()
-                        .requestMatchers("/reservations/**").hasRole( "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/reservations/**").hasRole("USER")
+                        .requestMatchers("/auth/register", "/login", "/logout").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/books/**").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/users/user-details").authenticated()
+
+
+                        .requestMatchers(HttpMethod.POST, "/reservations").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/reservations/my-reservations").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/reservations/cancel/**").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/reservations/return/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/reservations/**").hasRole("ADMIN")
+
                         .requestMatchers(HttpMethod.POST, "/books").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/books/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/books/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT, "/reservations/collect/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/reservations/return/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/reservations/extend/**").hasRole("ADMIN")
+
+                        .requestMatchers("/reservations/**").hasRole("ADMIN")
+                        .requestMatchers("/users/**").hasRole("ADMIN")
+
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

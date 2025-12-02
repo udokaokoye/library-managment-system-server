@@ -27,9 +27,11 @@ public class BookService {
 
     @Transactional
     public BookDto createBook(@RequestBody CreateBookRequest request) {
+
         var bookEntity = bookMapper.toEntity(request);
-        entityManager.persist(bookEntity);
-        return bookMapper.toBookDto(bookEntity);
+        bookEntity.setAvailableCopies(bookEntity.getTotalCopies());
+        Book savedBook = bookRepository.save(bookEntity);
+        return bookMapper.toBookDto(savedBook);
     }
 
     @Transactional(readOnly = true) // Optimization: Tells DB we won't modify data
@@ -54,7 +56,7 @@ public class BookService {
             throw new RuntimeException("Cannot reduce total copies. " + Math.abs(newAvailable) + " copies are currently borrowed and would be unaccounted for.");
         }
 
-        // Update fields
+
         book.setTitle(request.getTitle());
         book.setAuthor(request.getAuthor());
         book.setPublicationYear(request.getPublicationYear());
@@ -69,11 +71,15 @@ public class BookService {
     @Transactional
     public void deleteBook(Long id) {
         if (!bookRepository.existsById(id)) {
-            throw new EntityNotFoundException("Book not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found");
         }
 
-        if (reservationRepository.existsByBookId(id)) {
-            throw new RuntimeException("Cannot delete this book because it has associated reservations. Consider archiving it or deleting the reservations first.");
+        var reservations = reservationRepository.findAll().stream()
+                .filter(r -> r.getBook().getId().equals(id))
+                .toList();
+
+        if (!reservations.isEmpty()) {
+            reservationRepository.deleteAll(reservations);
         }
 
         bookRepository.deleteById(id);
