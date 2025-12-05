@@ -10,7 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+/**
+ * Handles authentication-related endpoints for the library system.
+ * <p>
+ * Currently supports user registration by accepting incoming
+ * sign-up data and forwarding it to the authentication service.
+ */
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
