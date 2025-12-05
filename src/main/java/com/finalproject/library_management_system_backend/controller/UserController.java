@@ -7,6 +7,7 @@ import com.finalproject.library_management_system_backend.repositories.UserRepos
 import com.finalproject.library_management_system_backend.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -62,5 +63,11 @@ public class UserController {
     @GetMapping("/user-details")
     public UserDto getMyUserDetails(Principal principal) {
         return userService.getUserDetailsByEmail(principal.getName());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User deleted successfully.");
     }
 }

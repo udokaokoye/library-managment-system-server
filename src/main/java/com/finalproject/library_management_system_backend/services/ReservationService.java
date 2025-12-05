@@ -216,13 +216,19 @@ public class ReservationService {
 
         if (reservation.getStatus() != ReservationStatus.BORROWED &&
                 reservation.getStatus() != ReservationStatus.OVERDUE) {
-            throw new RuntimeException("Cannot return. Book is not currently active (Borrowed or Overdue).");
+            throw new RuntimeException("Cannot return. Book is not currently active.");
+        }
+
+        if (reservation.getExpectedReturnDate() == null) {
+            LocalDateTime baseDate = (reservation.getReservationDate() != null)
+                    ? reservation.getReservationDate()
+                    : LocalDateTime.now().minusDays(7);
+            reservation.setExpectedReturnDate(baseDate.plusDays(7));
         }
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expectedReturn = reservation.getExpectedReturnDate();
 
-        if (now.isAfter(expectedReturn)) {
+        if (now.isAfter(reservation.getExpectedReturnDate())) {
             reservation.setStatus(ReservationStatus.LATE_RETURNED);
         } else {
             reservation.setStatus(ReservationStatus.RETURNED);
@@ -234,5 +240,26 @@ public class ReservationService {
         Book book = reservation.getBook();
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         bookRepository.save(book);
+    }
+
+    @Transactional
+    public void extendReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+        if (reservation.getStatus() != ReservationStatus.BORROWED &&
+                reservation.getStatus() != ReservationStatus.OVERDUE) {
+            throw new RuntimeException("Cannot extend. Book is not currently active.");
+        }
+
+        LocalDateTime currentDue = reservation.getExpectedReturnDate();
+        reservation.setExpectedReturnDate(currentDue.plusDays(7));
+
+        if (reservation.getStatus() == ReservationStatus.OVERDUE &&
+                reservation.getExpectedReturnDate().isAfter(LocalDateTime.now())) {
+            reservation.setStatus(ReservationStatus.BORROWED);
+        }
+
+        reservationRepository.save(reservation);
     }
 }

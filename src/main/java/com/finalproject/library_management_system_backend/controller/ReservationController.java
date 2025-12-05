@@ -113,4 +113,10 @@ public class ReservationController {
         reservationService.returnBook(id);
         return ResponseEntity.ok("Book returned successfully.");
     }
+
+    @PutMapping("/extend/{id}")
+    public ResponseEntity<String> extendReservation(@PathVariable Long id) {
+        reservationService.extendReservation(id);
+        return ResponseEntity.ok("Loan extended by 7 days.");
+    }
 }
