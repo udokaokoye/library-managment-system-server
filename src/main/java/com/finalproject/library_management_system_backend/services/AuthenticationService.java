@@ -13,6 +13,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Handles authentication-related logic, such as registering new users.
+ * <p>
+ * Performs validation checks, assigns user types, encodes passwords,
+ * and persists new accounts to the database.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -21,6 +27,25 @@ public class AuthenticationService {
     private final UserTypeRepository userTypeRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+
+        /**
+     * Registers a new user in the system.
+     * <p>
+     * Steps performed:
+     * <ul>
+     *     <li>Checks whether the email already exists</li>
+     *     <li>Fetches and assigns the correct user type</li>
+     *     <li>Encodes the user’s password</li>
+     *     <li>Saves the new user and returns a DTO representation</li>
+     * </ul>
+     *
+     * @param request the incoming registration details such as
+     *                first name, last name, email, password,
+     *                and user type ID
+     * @return a {@link UserDto} describing the created user
+     * @throws ResponseStatusException if an account already exists
+     *                                 with the provided email
+     */
 
     public UserDto register(RegisterUserRequest request) {
 
