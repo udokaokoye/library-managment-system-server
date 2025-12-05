@@ -46,6 +46,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/reservations/**").hasRole("ADMIN")
                         .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
 
                         .anyRequest().authenticated()

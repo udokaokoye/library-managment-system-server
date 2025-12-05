@@ -17,6 +17,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByStatusAndExpectedReturnDateBefore(ReservationStatus status, LocalDateTime now);
 
+
+
     boolean existsByBookId(Long bookId);
 }
 

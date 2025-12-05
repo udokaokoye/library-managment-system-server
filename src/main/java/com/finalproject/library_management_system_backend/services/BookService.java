@@ -34,7 +34,7 @@ public class BookService {
         return bookMapper.toBookDto(savedBook);
     }
 
-    @Transactional(readOnly = true) // Optimization: Tells DB we won't modify data
+    @Transactional(readOnly = true)
     public BookDto getBookById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
