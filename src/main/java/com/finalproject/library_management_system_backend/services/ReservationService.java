@@ -20,6 +20,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Handles the full lifecycle of book reservations in the library system.
+ * <p>
+ * Supports creating reservations, collecting books, canceling,
+ * returning, and automatically marking overdue reservations.
+ */
+
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
@@ -28,6 +35,22 @@ public class ReservationService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final ReservationMapper reservationMapper;
+
+        /**
+     * Creates a reservation for a user.
+     * <p>
+     * Steps performed:
+     * <ul>
+     *     <li>Validates the user and book</li>
+     *     <li>Ensures the book has available copies</li>
+     *     <li>Reserves a copy and reduces availability</li>
+     *     <li>Sets an expected return date (default: 7 days)</li>
+     * </ul>
+     *
+     * @param request   contains book ID and optional number of days to keep
+     * @param userEmail email of the user making the reservation
+     * @return the created reservation
+     */
 
     @Transactional
     public ReservationDto createReservation(CreateReservationRequest request, String userEmail) {
@@ -62,6 +85,12 @@ public class ReservationService {
         return reservationMapper.toDto(savedReservation);
     }
 
+        /**
+     * Retrieves every reservation in the system.
+     *
+     * @return all reservations as DTOs
+     */
+
     @Transactional(readOnly = true)
     public List<ReservationDto> getAllReservations() {
         return reservationRepository.findAll()
@@ -69,6 +98,13 @@ public class ReservationService {
                 .map(reservationMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+        /**
+     * Retrieves reservations belonging to a user identified by email.
+     *
+     * @param userEmail user email
+     * @return list of matching reservations
+     */
 
     @Transactional(readOnly = true)
     public List<ReservationDto> getReservationsByUser(String userEmail) {
@@ -78,6 +114,13 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
+        /**
+     * Retrieves reservations belonging to a user identified by ID.
+     *
+     * @param userId the user’s ID
+     * @return list of reservations
+     */
+
     @Transactional(readOnly = true)
     public List<ReservationDto> getReservationsByUserId(Long userId) {
         return reservationRepository.findByUserId(userId)
@@ -85,6 +128,13 @@ public class ReservationService {
                 .map(reservationMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+        /**
+     * Marks a reserved book as collected.
+     * Reservation must currently be in the RESERVED state.
+     *
+     * @param reservationId ID of the reservation
+     */
 
     @Transactional
     public void collectBook(Long reservationId) {
@@ -99,6 +149,12 @@ public class ReservationService {
         reservationRepository.save(reservation);
 
     }
+
+        /**
+     * Cancels a reservation and restores the book’s available copies.
+     *
+     * @param reservationId reservation ID
+     */
 
     @Transactional
     public void cancelReservation(Long reservationId) {
@@ -116,6 +172,13 @@ public class ReservationService {
         book.setAvailableCopies(book.getAvailableCopies() + 1);
         bookRepository.save(book);
     }
+
+        /**
+     * Runs every day at midnight.
+     * <p>
+     * Finds all BORROWED reservations whose expected return
+     * dates have passed and marks them as OVERDUE.
+     */
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
@@ -136,6 +199,15 @@ public class ReservationService {
             System.out.println("Marked " + overdueList.size() + " books as OVERDUE.");
         }
     }
+
+        /**
+     * Returns a borrowed or overdue book.
+     * <p>
+     * Updates status to either RETURNED or LATE_RETURNED,
+     * restores available copies, and records the return timestamp.
+     *
+     * @param reservationId the reservation being completed
+     */
 
     @Transactional
     public void returnBook(Long reservationId) {
