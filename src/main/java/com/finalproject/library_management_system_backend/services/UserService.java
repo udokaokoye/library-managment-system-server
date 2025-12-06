@@ -16,6 +16,12 @@ import com.finalproject.library_management_system_backend.repositories.Reservati
 
 import java.util.List;
 
+/**
+ * Handles operations related to user accounts, including creation,
+ * retrieval, and deletion. Ensures related reservations are handled
+ * consistently when accounts are removed.
+ */
+
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -25,11 +31,27 @@ public class UserService {
     private final ReservationRepository reservationRepository;
     private final EntityManager entityManager;
 
+
+        /**
+     * Retrieves user details based on the provided email address.
+     *
+     * @param email the user’s email
+     * @return a {@link UserDto} containing the user’s information
+     * @throws java.util.NoSuchElementException if no user is found
+     */
     public UserDto getUserDetailsByEmail(String email){
         var userEntity = userRepository.findByEmail(email).orElseThrow();
         return userMapper.toDto(userEntity);
     }
 
+
+        /**
+     * Creates a new user and persists it to the database.
+     *
+     * @param request contains registration details such as
+     *                first name, last name, email, and user type
+     * @return the created user as a DTO
+     */
     @Transactional
     public UserDto createUser(@RequestBody RegisterUserRequest request){
         var userEntity = userMapper.toEntity(request);
@@ -37,6 +59,19 @@ public class UserService {
         return userMapper.toDto(userEntity);
  }
 
+
+        /**
+     * Deletes a user and any reservations associated with them.
+     * <p>
+     * Additional rules:
+     * <ul>
+     *     <li>Administrator accounts cannot be deleted</li>
+     *     <li>All of the user’s reservations are removed before deleting the account</li>
+     * </ul>
+     *
+     * @param userId the ID of the user to delete
+     * @throws RuntimeException if the user does not exist or is an administrator
+     */
     @Transactional
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
