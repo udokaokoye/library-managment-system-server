@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Provides administrative endpoints for retrieving system-wide statistics.
+ * <p>
+ * Returns summary metrics such as total books, users, reservations,
+ * active loans, and overdue items. Intended for use in admin dashboards.
+ */
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
@@ -18,6 +24,13 @@ public class AdminController {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
+
+    /**
+ * Provides administrative endpoints for retrieving system-wide statistics.
+ * <p>
+ * Returns summary metrics such as total books, users, reservations,
+ * active loans, and overdue items. Intended for use in admin dashboards.
+ */
 
     @GetMapping("/stats")
     public DashboardStats getDashboardStats() {
